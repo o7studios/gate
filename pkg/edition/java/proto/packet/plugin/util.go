@@ -112,7 +112,7 @@ func ConstructChannelsPacket(protocol proto.Protocol, channels ...string) *Messa
 }
 
 // RewriteMinecraftBrand rewrites the brand message to indicate the presence of the proxy.
-func RewriteMinecraftBrand(message *Message, protocol proto.Protocol) *Message {
+var RewriteMinecraftBrand = func(message *Message, protocol proto.Protocol) *Message {
 	if message == nil || !McBrand(message) {
 		return message
 	}
