@@ -51,12 +51,20 @@ When multiple backends are configured, Gate Lite can distribute connections usin
 
 :::: code-group
 
-```yaml [Random (Default)]
+```yaml [Sequential (Default)]
 lite:
   routes:
     - host: play.example.com
       backend: [server1:25565, server2:25565, server3:25565]
-      # strategy: random (default - can omit)
+      # strategy: sequential # (default - can omit)
+```
+
+```yaml [Random]
+lite:
+  routes:
+    - host: play.example.com
+      backend: [server1:25565, server2:25565, server3:25565]
+      strategy: random
 ```
 
 ```yaml [Round-Robin]
@@ -104,12 +112,13 @@ lite:
 
 ::::
 
-| Strategy            | Description                    | Algorithm                       |
-| ------------------- | ------------------------------ | ------------------------------- |
-| `random` (default)  | Random backend selection       | Cryptographically secure random |
-| `round-robin`       | Sequential cycling             | Fair rotation per route         |
-| `least-connections` | Routes to least-loaded backend | Real-time connection counting   |
-| `lowest-latency`    | Routes to fastest backend      | Status ping latency measurement |
+| Strategy                 | Description                    | Algorithm                       |
+| ------------------------ | ------------------------------ | ------------------------------- |
+| `sequential` **default** | Sequential backend order       | Tries backends in config order  |
+| `random`                 | Random backend selection       | Cryptographically secure random |
+| `round-robin`            | Sequential cycling             | Fair rotation per route         |
+| `least-connections`      | Routes to least-loaded backend | Real-time connection counting   |
+| `lowest-latency`         | Routes to fastest backend      | Status ping latency measurement |
 
 ::: tip Performance Notes
 
@@ -147,7 +156,7 @@ config:
     routes:
       - host: abc.example.com
         backend: [10.0.0.3:25565, 10.0.0.4:25565]
-        cachePingTTL: 3m # or 180s // [!code ++]
+        cachePingTTL: 3m # or 180s [!code ++]
 ```
 
 _TTL - the Time-to-live before evicting the response data from the in-memory cache_
@@ -167,7 +176,7 @@ config:
     routes:
       - host: abc.example.com
         backend: 10.0.0.3:25568
-        cachePingTTL: -1s // [!code ++]
+        cachePingTTL: -1s # [!code ++]
 ```
 
 :::
@@ -216,7 +225,7 @@ config:
     routes:
       - host: localhost
         backend: play.example.com
-        modifyVirtualHost: true // [!code ++]
+        modifyVirtualHost: true # [!code ++]
 ```
 
 :::
@@ -251,7 +260,7 @@ config:
     routes:
       - host: abc.example.com
         backend: 10.0.0.3:25566
-        proxyProtocol: true // [!code ++]
+        proxyProtocol: true # [!code ++]
 ```
 
 - [Gate - Enable Proxy Protocol](https://github.com/minekube/gate/blob/7b03987bcdc7e8a6ed96156fa147bdd9dbf6ba4c/config.yml#L85)

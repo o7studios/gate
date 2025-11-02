@@ -38,6 +38,10 @@ export default defineConfig({
     ['meta', { property: 'og:image', content: ogImage }],
     ['meta', { property: 'og:url', content: ogUrl }],
     ['meta', { name: 'theme-color', content: '#646cff' }],
+    [
+      'script',
+      { src: 'https://cdn.jsdelivr.net/npm/@widgetbot/html-embed', defer: '' },
+    ],
     // [
     //     'script',
     //     {
@@ -57,6 +61,11 @@ export default defineConfig({
 
   vue: {
     // reactivityTransform: true, // This option is deprecated
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => tag === 'widgetbot',
+      },
+    },
   },
 
   ignoreDeadLinks: 'localhostLinks',
@@ -95,7 +104,6 @@ export default defineConfig({
       { text: 'Bedrock', link: '/guide/bedrock' },
       { text: 'Lite Mode', link: '/guide/lite' },
       { text: 'API & SDKs', link: '/developers/api/' },
-      { text: 'Developers', link: '/developers/' },
       { text: 'Config', link: '/guide/config/' },
       { text: 'Downloads', link: '/guide/install/' },
       { text: 'Extensions', link: '/extensions' },
@@ -211,10 +219,6 @@ export default defineConfig({
               link: '/guide/connect',
             },
             {
-              text: '🔧 Modded Servers Config',
-              link: '/guide/config/modded-servers',
-            },
-            {
               text: '🌐 ForcedHosts Routing',
               link: '/guide/forced-hosts',
             },
@@ -288,6 +292,10 @@ export default defineConfig({
               text: 'Commands',
               link: '/developers/commands',
             },
+            {
+              text: 'Sounds',
+              link: '/developers/sound',
+            },
           ],
         },
         {
@@ -339,6 +347,10 @@ export default defineConfig({
             {
               text: 'Definition',
               link: '/developers/api/definition',
+            },
+            {
+              text: 'OpenAPI',
+              link: '/developers/api/openapi',
             },
             {
               text: 'Glossary',

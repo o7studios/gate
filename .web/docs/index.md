@@ -20,7 +20,7 @@ hero:
       link: /guide/lite
     - theme: alt
       text: Bedrock
-      link: /guide/lite
+      link: /guide/bedrock
     - theme: alt
       text: Extensions
       link: /extensions
@@ -42,7 +42,7 @@ features:
     details: Enable cross-play between Java and Bedrock players with built-in Geyser integration. Mobile, console, and PC players together!
     link: /guide/bedrock
     linkText: Bedrock Support
-  - icon: 🪄
+  - icon: 🪶
     title: Lite Mode
     details: Gate Lite is an ultra-thin lightweight Minecraft reverse proxy for host based connection routing.
     link: /guide/lite

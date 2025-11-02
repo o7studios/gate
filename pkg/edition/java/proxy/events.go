@@ -1131,8 +1131,12 @@ func (e *PlayerClientBrandEvent) Brand() string {
 //
 //
 
-// PreShutdownEvent is fired before the proxy begins to shut down by
-// stopping to accept new connections and disconnect all players.
+// PreShutdownEvent is fired by the proxy after it has stopped accepting new connections,
+// but before any players are disconnected. This is the last opportunity to interact with
+// currently connected players, such as transferring them to another proxy or performing
+// cleanup tasks.
+//
+// The proxy will wait for all event listeners to complete before disconnecting players.
 type PreShutdownEvent struct {
 	reason component.Component // may be nil
 }
@@ -1326,3 +1330,37 @@ func (e *CookieRequestEvent) Allowed() bool { return !e.denied }
 
 // SetAllowed sets whether the cookie request is allowed to be forwarded to the client.
 func (e *CookieRequestEvent) SetAllowed(allowed bool) { e.denied = !allowed }
+
+//
+//
+//
+//
+//
+
+// ServerRegisteredEvent is fired when a backend server is registered with the proxy.
+// This allows plugins to react to dynamically added servers and perform necessary setup.
+type ServerRegisteredEvent struct {
+	server RegisteredServer
+}
+
+// Server returns the server that was registered.
+func (e *ServerRegisteredEvent) Server() RegisteredServer {
+	return e.server
+}
+
+//
+//
+//
+//
+//
+
+// ServerUnregisteredEvent is fired when a backend server is unregistered from the proxy.
+// This allows plugins to react to removed servers and perform necessary cleanup.
+type ServerUnregisteredEvent struct {
+	server ServerInfo
+}
+
+// ServerInfo returns the server info of the server that was unregistered.
+func (e *ServerUnregisteredEvent) ServerInfo() ServerInfo {
+	return e.server
+}
