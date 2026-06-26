@@ -80,8 +80,8 @@ var DefaultConfig = Config{
 	Bedrock:                             bconfig.DefaultBedrockConfig,
 }
 
-func defaultMotd() *configutil.TextComponent {
-	return text("§bA Gate Proxy\n§bVisit ➞ §fgithub.com/minekube/gate")
+func defaultMotd() *configutil.Component {
+	return componentText("§bA Gate Proxy\n§bVisit ➞ §fgithub.com/minekube/gate")
 }
 func defaultShutdownReason() *configutil.TextComponent {
 	return text("§cGate proxy is shutting down...\nPlease reconnect in a moment!")
@@ -129,6 +129,7 @@ type Config struct { // TODO use https://github.com/projectdiscovery/yamldoc-go 
 	ShutdownReason *configutil.TextComponent `yaml:"shutdownReason,omitempty" json:"shutdownReason,omitempty"`
 
 	Lite liteconfig.Config `yaml:"lite,omitempty" json:"lite,omitempty"` // Lite mode settings
+	Via  Via               `yaml:"via,omitempty" json:"via,omitempty"`   // Via backend compatibility settings
 
 	// Bedrock edition configuration
 	Bedrock bconfig.BedrockConfig `yaml:"bedrock,omitempty" json:"bedrock,omitempty"`
@@ -137,10 +138,10 @@ type Config struct { // TODO use https://github.com/projectdiscovery/yamldoc-go 
 type (
 	ForcedHosts map[string][]string // virtualhost:server names
 	Status      struct {
-		ShowMaxPlayers  int                       `yaml:"showMaxPlayers"`
-		Motd            *configutil.TextComponent `yaml:"motd"`
-		Favicon         favicon.Favicon           `yaml:"favicon"`
-		LogPingRequests bool                      `yaml:"logPingRequests"`
+		ShowMaxPlayers  int                   `yaml:"showMaxPlayers"`
+		Motd            *configutil.Component `yaml:"motd"`
+		Favicon         favicon.Favicon       `yaml:"favicon"`
+		LogPingRequests bool                  `yaml:"logPingRequests"`
 	}
 	Query struct {
 		Enabled     bool `yaml:"enabled"`
@@ -151,6 +152,16 @@ type (
 		Mode              ForwardingMode `yaml:"mode"`
 		VelocitySecret    string         `yaml:"velocitySecret"`    // Used with "velocity" mode
 		BungeeGuardSecret string         `yaml:"bungeeGuardSecret"` // Used with "bungeeguard" mode
+	}
+	Via struct {
+		Enabled     bool   `yaml:"enabled,omitempty" json:"enabled,omitempty"`
+		Mode        string `yaml:"mode,omitempty" json:"mode,omitempty"`
+		Bind        string `yaml:"bind,omitempty" json:"bind,omitempty"`
+		LibraryPath string `yaml:"libraryPath,omitempty" json:"libraryPath,omitempty"`
+		BinaryPath  string `yaml:"binaryPath,omitempty" json:"binaryPath,omitempty"`
+		Version     string `yaml:"version,omitempty" json:"version,omitempty"`
+		Mirror      string `yaml:"mirror,omitempty" json:"mirror,omitempty"`
+		Offline     bool   `yaml:"offline,omitempty" json:"offline,omitempty"`
 	}
 	Compression struct {
 		Threshold int `yaml:"threshold"`
@@ -237,6 +248,8 @@ func (c *Config) Validate() (warns []error, errs []error) {
 		return c.Lite.Validate()
 	}
 
+	validateVia(c, e)
+
 	if !c.OnlineMode {
 		w("Proxy is running in offline mode!")
 	}
@@ -294,9 +307,30 @@ func (c *Config) Validate() (warns []error, errs []error) {
 	return
 }
 
+func validateVia(c *Config, e func(string, ...any)) {
+	if !c.Via.Enabled {
+		return
+	}
+	switch c.Via.Mode {
+	case "", "embedded", "subprocess":
+	default:
+		e("Unknown via mode %q, must be one of embedded,subprocess", c.Via.Mode)
+	}
+	if c.Via.Bind != "" {
+		if err := validation.ValidHostPort(c.Via.Bind); err != nil {
+			e("Invalid via bind %q: %v", c.Via.Bind, err)
+		}
+	}
+}
+
 func text(s string) *configutil.TextComponent {
 	return (*configutil.TextComponent)(must(componentutil.ParseTextComponent(
 		version.MinimumVersion.Protocol, s)))
+}
+
+func componentText(s string) *configutil.Component {
+	return &configutil.Component{Value: must(componentutil.ParseComponent(
+		version.MaximumVersion.Protocol, s))}
 }
 
 func must[T any](t T, err error) T {

@@ -1,7 +1,223 @@
 # Changelog
 
-## [0.67.1](https://github.com/o7studios/gate/compare/v0.67.0...v0.67.1) (2026-06-12)
+## [0.68.2](https://github.com/minekube/gate/compare/v0.68.1...v0.68.2) (2026-06-26)
 
+
+### Bug Fixes
+
+* adopt modern Common text components ([4f2debc](https://github.com/minekube/gate/commit/4f2debcde3c083df814c078b97a590e22edcd287))
+
+## [0.68.1](https://github.com/minekube/gate/compare/v0.68.0...v0.68.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency build.buf.gen:minekube_gate_grpc_java to v1.82.1.1.20241118150055.50fffb007499 ([#832](https://github.com/minekube/gate/issues/832)) ([48a2c54](https://github.com/minekube/gate/commit/48a2c5434adee9c8bfef94d12eaf992d57827e62))
+
+## [0.68.0](https://github.com/minekube/gate/compare/v0.67.0...v0.68.0) (2026-06-23)
+
+
+### Features
+
+* route dynamic servers through managed Via ([d22711d](https://github.com/minekube/gate/commit/d22711dc53bb024bafa08b741f29454d332581c2))
+
+## [0.67.0](https://github.com/minekube/gate/compare/v0.66.40...v0.67.0) (2026-06-23)
+
+
+### Features
+
+* use vialite auto latest subprocess runtime ([c174b31](https://github.com/minekube/gate/commit/c174b3153769c33873b25a27f2e8695b977f3cb6))
+
+## [0.66.40](https://github.com/minekube/gate/compare/v0.66.39...v0.66.40) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.39 ([#824](https://github.com/minekube/gate/issues/824)) ([a842a3b](https://github.com/minekube/gate/commit/a842a3b22566e331ff113dc279cd34ca1fc456b1))
+
+## [0.66.39](https://github.com/minekube/gate/compare/v0.66.38...v0.66.39) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.38 ([#816](https://github.com/minekube/gate/issues/816)) ([318d0ba](https://github.com/minekube/gate/commit/318d0ba66dd7551c29d8a4f295748f74d7aa5830))
+
+## [0.66.38](https://github.com/minekube/gate/compare/v0.66.37...v0.66.38) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update geyserlite to v0.3.14 ([a3e7ed7](https://github.com/minekube/gate/commit/a3e7ed723db9b0037690d33854aa602a21255f97))
+
+## [0.66.37](https://github.com/minekube/gate/compare/v0.66.36...v0.66.37) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.36 ([#806](https://github.com/minekube/gate/issues/806)) ([6549dfe](https://github.com/minekube/gate/commit/6549dfe607102a8906663ae1aab46b220a0e0c2e))
+
+## [0.66.36](https://github.com/minekube/gate/compare/v0.66.35...v0.66.36) (2026-06-22)
+
+
+### Bug Fixes
+
+* retain queued backend keepalive replies ([#807](https://github.com/minekube/gate/issues/807)) ([03af8de](https://github.com/minekube/gate/commit/03af8dea7ef15c10baeec465354af0162f95b4ab))
+
+## [0.66.35](https://github.com/minekube/gate/compare/v0.66.34...v0.66.35) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/jellydator/ttlcache/v3 to v3.4.1 ([#804](https://github.com/minekube/gate/issues/804)) ([3e3500e](https://github.com/minekube/gate/commit/3e3500e9a46c113756d0d36881b193530c5c43a7))
+
+## [0.66.34](https://github.com/minekube/gate/compare/v0.66.33...v0.66.34) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** Update geyserlite ([#802](https://github.com/minekube/gate/issues/802)) ([eebb580](https://github.com/minekube/gate/commit/eebb580bf88c79a3fe65fe6551e9c00a879b8871))
+
+## [0.66.33](https://github.com/minekube/gate/compare/v0.66.32...v0.66.33) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.32 ([#800](https://github.com/minekube/gate/issues/800)) ([84d56d5](https://github.com/minekube/gate/commit/84d56d52086ad48746988d0bc8bbb868811d301a))
+
+## [0.66.32](https://github.com/minekube/gate/compare/v0.66.31...v0.66.32) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** Update geyserlite to v0.3.12 ([#798](https://github.com/minekube/gate/issues/798)) ([f87a81e](https://github.com/minekube/gate/commit/f87a81e9972862a09f3d700f9a60f96b7bc74c06))
+
+## [0.66.31](https://github.com/minekube/gate/compare/v0.66.30...v0.66.31) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.30 ([#796](https://github.com/minekube/gate/issues/796)) ([88f1673](https://github.com/minekube/gate/commit/88f1673086827d37f3d84417aafff5a0aabae71d))
+
+## [0.66.30](https://github.com/minekube/gate/compare/v0.66.29...v0.66.30) (2026-06-21)
+
+
+### Bug Fixes
+
+* **deps:** Update geyserlite to v0.3.10 ([#791](https://github.com/minekube/gate/issues/791)) ([53bbf8f](https://github.com/minekube/gate/commit/53bbf8fb37d6a5b841cbbe0d8a7acc4303369dc4))
+
+## [0.66.29](https://github.com/minekube/gate/compare/v0.66.28...v0.66.29) (2026-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.28 ([#788](https://github.com/minekube/gate/issues/788)) ([fec6844](https://github.com/minekube/gate/commit/fec6844e34b50e1e82df9e0d59554d2fe14fc9ac))
+
+## [0.66.28](https://github.com/minekube/gate/compare/v0.66.27...v0.66.28) (2026-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.26 ([#782](https://github.com/minekube/gate/issues/782)) ([c7745a3](https://github.com/minekube/gate/commit/c7745a3630026fd87773ab281797dc7eb994cfb3))
+
+## [0.66.27](https://github.com/minekube/gate/compare/v0.66.26...v0.66.27) (2026-06-17)
+
+
+### Bug Fixes
+
+* add musl linux installer assets ([e22541c](https://github.com/minekube/gate/commit/e22541cbf57fa9841eb5ddaf19a913abe6e92c26))
+
+## [0.66.26](https://github.com/minekube/gate/compare/v0.66.25...v0.66.26) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update module go.uber.org/zap to v1.28.0 ([#778](https://github.com/minekube/gate/issues/778)) ([a85fe51](https://github.com/minekube/gate/commit/a85fe518c77da8a4f3677c6e6f895e76bd61458c))
+
+## [0.66.25](https://github.com/minekube/gate/compare/v0.66.24...v0.66.25) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update module go.minekube.com/gate to v0.66.24 ([#776](https://github.com/minekube/gate/issues/776)) ([d428e12](https://github.com/minekube/gate/commit/d428e120235b3342e8c41a090a28ad5e5e0f892b))
+
+## [0.66.24](https://github.com/minekube/gate/compare/v0.66.23...v0.66.24) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/pires/go-proxyproto to v0.12.0 ([#770](https://github.com/minekube/gate/issues/770)) ([695f1e2](https://github.com/minekube/gate/commit/695f1e2ce45e51a6b6ac0c721bd17c9da1d7429a))
+
+## [0.66.23](https://github.com/minekube/gate/compare/v0.66.22...v0.66.23) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update module connectrpc.com/connect to v1.20.0 ([#763](https://github.com/minekube/gate/issues/763)) ([c6741c7](https://github.com/minekube/gate/commit/c6741c74fb3a2b9dfe749812cf9fbc0c4a4187f3))
+
+## [0.66.22](https://github.com/minekube/gate/compare/v0.66.21...v0.66.22) (2026-06-15)
+
+
+### Bug Fixes
+
+* **bedrock:** avoid forwarding mobile ping to backend keepalive ([#771](https://github.com/minekube/gate/issues/771)) ([0b6c3ba](https://github.com/minekube/gate/commit/0b6c3ba369db8b01adf1a092848972122c73713f))
+
+## [0.66.21](https://github.com/minekube/gate/compare/v0.66.20...v0.66.21) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/go-faker/faker/v4 to v4.8.0 ([#768](https://github.com/minekube/gate/issues/768)) ([694b83f](https://github.com/minekube/gate/commit/694b83f8c2af0d14e0ac7b3f1b15e00c4e9faddf))
+
+## [0.66.20](https://github.com/minekube/gate/compare/v0.66.19...v0.66.20) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/coder/websocket to v1.8.15 ([#766](https://github.com/minekube/gate/issues/766)) ([f321f8c](https://github.com/minekube/gate/commit/f321f8ca7b7ce7d60f1be40476babf3bdf756c8a))
+
+## [0.66.19](https://github.com/minekube/gate/compare/v0.66.18...v0.66.19) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update module buf.build/gen/go/minekube/gate/connectrpc/go to v1.20.0-20250516132630-2a0c7768e191.1 ([#761](https://github.com/minekube/gate/issues/761)) ([0c6591e](https://github.com/minekube/gate/commit/0c6591eae358c647fc0671c8cfd8e043a87d5087))
+
+## [0.66.18](https://github.com/minekube/gate/compare/v0.66.17...v0.66.18) (2026-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update kotlinx-coroutines monorepo to v1.11.0 ([#759](https://github.com/minekube/gate/issues/759)) ([6690cf1](https://github.com/minekube/gate/commit/6690cf1ba8f6c0654c57ff5afced151c8b8e19c8))
+
+## [0.66.17](https://github.com/minekube/gate/compare/v0.66.16...v0.66.17) (2026-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update grpc-java monorepo to v1.82.0 ([#755](https://github.com/minekube/gate/issues/755)) ([2feb606](https://github.com/minekube/gate/commit/2feb60623c16ac7fc71046c7255544c66e83815e))
+
+## [0.66.16](https://github.com/minekube/gate/compare/v0.66.15...v0.66.16) (2026-06-14)
+
+
+### Bug Fixes
+
+* **deps:** Update geyserlite to v0.3.5 ([#749](https://github.com/minekube/gate/issues/749)) ([e620e0b](https://github.com/minekube/gate/commit/e620e0b8af0a58f788ef41c2016e3792d2fd2608))
+
+## [0.66.15](https://github.com/minekube/gate/compare/v0.66.14...v0.66.15) (2026-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency build.buf.gen:minekube_gate_grpc_java to v1.82.0.1.20241118150055.50fffb007499 ([#752](https://github.com/minekube/gate/issues/752)) ([f79e95b](https://github.com/minekube/gate/commit/f79e95b8d6aa5c871f1950e37eabd93d3af99404))
+
+## [0.66.14](https://github.com/minekube/gate/compare/v0.66.13...v0.66.14) (2026-06-13)
+
+
+### Bug Fixes
+
+* **deps:** bump geyserlite to v0.3.4 ([b574809](https://github.com/minekube/gate/commit/b574809008c25776703fe63327259a625ec198ed))
+
+## [0.66.13](https://github.com/minekube/gate/compare/v0.66.12...v0.66.13) (2026-06-10)
 
 ### Bug Fixes
 

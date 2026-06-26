@@ -293,27 +293,44 @@ func sendKeepAliveToBackend(serverConn *serverConnection, player *connectedPlaye
 	if serverConn == nil {
 		return false
 	}
-	sentTime, ok := serverConn.pendingPings.Get(p.RandomID)
+	sentTime, ok := consumePendingKeepAlive(serverConn, p.RandomID)
 	if !ok {
 		return false
 	}
-	// We removed this pending ping, so it is ours: consume it regardless of
-	// whether it can be forwarded, so it is not re-dispatched to another
-	// connection.
-	serverConn.pendingPings.Delete(p.RandomID)
-
-	// Only forward to the backend when it is open and in the same protocol state
-	// as the client. During a server switch the backend may be in CONFIG while
-	// the client is still in PLAY; forwarding then would mis-encode the packet.
+	// A matching pending ID proves this reply belongs to this backend. Encode it
+	// with the backend connection state; during 1.20.2+ switches the client and
+	// backend can briefly be in different CONFIG/PLAY states.
 	serverMc := serverConn.conn()
-	clientState := player.State()
-	if serverMc != nil && !netmc.Closed(serverMc) &&
-		clientState == serverMc.State() &&
-		(clientState == state.Config || clientState == state.Play) {
-		player.ping.Store(time.Since(sentTime))
-		_ = serverMc.WritePacket(p)
+	if serverMc != nil && !netmc.Closed(serverMc) {
+		backendState := serverMc.State()
+		if backendState == state.Config || backendState == state.Play {
+			player.ping.Store(time.Since(sentTime))
+			_ = serverMc.WritePacket(p)
+		}
 	}
 	return true
+}
+
+func consumePendingKeepAlive(serverConn *serverConnection, randomID int64) (time.Time, bool) {
+	serverConn.mu.Lock()
+	defer serverConn.mu.Unlock()
+
+	sentTime, ok := serverConn.pendingPings.Get(randomID)
+	if !ok {
+		return time.Time{}, false
+	}
+	// We removed this pending ping, so it is ours: consume it regardless of
+	// whether it can be forwarded, so it is not re-dispatched to another
+	// connection or forwarded twice by concurrent handlers.
+	serverConn.pendingPings.Delete(randomID)
+	return sentTime, true
+}
+
+func recordBackendKeepAlive(serverConn *serverConnection, p *packet.KeepAlive) {
+	serverConn.mu.Lock()
+	defer serverConn.mu.Unlock()
+
+	serverConn.pendingPings.Set(p.RandomID, time.Now())
 }
 
 func (c *clientPlaySessionHandler) handlePluginMessage(packet *plugin.Message) {

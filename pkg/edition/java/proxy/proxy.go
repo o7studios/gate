@@ -64,10 +64,14 @@ type Proxy struct {
 	playerNames map[string]*connectedPlayer    // lower case usernames map
 	playerIDs   map[uuid.UUID]*connectedPlayer // uuids map
 
+	sessionIDMu      sync.Mutex
+	currentSessionID uuid.UUID
+
 	connectionsQuota *addrquota.Quota
 	loginsQuota      *addrquota.Quota
 
 	lite *lite.Lite // lite mode functionality
+	via  *viaManagedRunner
 }
 
 // Options are the options for a new Java edition Proxy.
@@ -115,6 +119,7 @@ func New(options Options) (p *Proxy, err error) {
 		playerIDs:        map[uuid.UUID]*connectedPlayer{},
 		authenticator:    authn,
 		lite:             lite.NewLite(), // create lite mode functionality for this proxy instance
+		via:              newViaManagedRunner(options.Config),
 	}
 
 	// Connection & login rate limiters
@@ -169,6 +174,13 @@ func (p *Proxy) Start(ctx context.Context) error {
 	ctx = p.startCtx
 	defer p.cancelStart()
 	p.closeMu.Unlock()
+
+	if p.via != nil && p.via.enabled() {
+		if err := p.via.Start(ctx); err != nil {
+			return fmt.Errorf("error starting vialite: %w", err)
+		}
+		defer p.via.Stop()
+	}
 
 	if err := p.init(); err != nil {
 		return fmt.Errorf("pre-initialization error: %w", err)
@@ -319,11 +331,14 @@ func (p *Proxy) init() (err error) {
 				return fmt.Errorf("error parsing server %q address %q: %w", name, addr, err)
 			}
 			info := NewServerInfo(name, pAddr)
+			if p.via != nil && p.via.backendEnabled(name) {
+				info = newViaServerInfo(info, p.via)
+			}
 			expectedServers[strings.ToLower(name)] = info
 
 			// Check if server is already registered
 			if rs := p.Server(name); rs != nil {
-				if ServerInfoEqual(rs.ServerInfo(), info) {
+				if serverInfoSyncEqual(rs.ServerInfo(), info) {
 					// Server exists and is identical - mark as config-managed and continue
 					p.muS.Lock()
 					p.configServers[strings.ToLower(name)] = true
@@ -481,10 +496,39 @@ func (p *Proxy) Register(info ServerInfo) (RegisteredServer, error) {
 	name := strings.ToLower(info.Name())
 
 	p.muS.Lock()
-	defer p.muS.Unlock()
 	if exists, ok := p.servers[name]; ok {
+		p.muS.Unlock()
 		return exists, ErrServerAlreadyExists
 	}
+	p.muS.Unlock()
+
+	var viaAdded bool
+	if _, alreadyVia := info.(*viaServerInfo); !alreadyVia && p.via != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		enabled, err := p.via.AddBackend(ctx, info)
+		if err != nil {
+			return nil, fmt.Errorf("error adding via backend %q: %w", info.Name(), err)
+		}
+		if enabled {
+			viaAdded = true
+			info = newViaServerInfo(info, p.via)
+		}
+	}
+
+	p.muS.Lock()
+	if exists, ok := p.servers[name]; ok {
+		p.muS.Unlock()
+		if viaAdded {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := p.via.RemoveBackend(ctx, info.Name()); err != nil {
+				p.log.Error(err, "could not remove duplicate via backend", "server", info.Name())
+			}
+		}
+		return exists, ErrServerAlreadyExists
+	}
+	defer p.muS.Unlock()
 	rs := newRegisteredServer(info)
 	p.servers[name] = rs
 	// Note: We don't mark API-registered servers as config-managed
@@ -513,6 +557,13 @@ func (p *Proxy) Unregister(info ServerInfo) bool {
 	}
 	delete(p.servers, name)
 	delete(p.configServers, name) // Clean up config tracking
+	if p.via != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		if err := p.via.RemoveBackend(ctx, info.Name()); err != nil {
+			p.log.Error(err, "could not remove via backend", "server", info.Name())
+		}
+	}
 
 	p.log.Info("unregistered backend server",
 		"name", info.Name(), "addr", info.Addr())
@@ -752,11 +803,43 @@ retry:
 // unregisters a connected player
 func (p *Proxy) unregisterConnection(player *connectedPlayer) (found bool) {
 	p.muP.Lock()
-	defer p.muP.Unlock()
 	_, found = p.playerIDs[player.ID()]
 	delete(p.playerNames, strings.ToLower(player.Username()))
 	delete(p.playerIDs, player.ID())
+	empty := len(p.playerIDs) == 0
+	p.muP.Unlock()
+	if empty {
+		p.resetSessionIDIfEmpty()
+	}
 	return found
+}
+
+func (p *Proxy) sessionID() uuid.UUID {
+	p.sessionIDMu.Lock()
+	defer p.sessionIDMu.Unlock()
+	if p.currentSessionID == uuid.Nil {
+		p.currentSessionID = uuid.New()
+	}
+	return p.currentSessionID
+}
+
+func (p *Proxy) resetSessionIDIfEmpty() {
+	p.muP.RLock()
+	empty := len(p.playerIDs) == 0
+	p.muP.RUnlock()
+	if !empty {
+		return
+	}
+
+	p.sessionIDMu.Lock()
+	defer p.sessionIDMu.Unlock()
+
+	p.muP.RLock()
+	empty = len(p.playerIDs) == 0
+	p.muP.RUnlock()
+	if empty {
+		p.currentSessionID = uuid.Nil
+	}
 }
 
 //

@@ -131,6 +131,15 @@ func ServerInfoEqual(a, b ServerInfo) bool {
 		a.Addr().Network() == b.Addr().Network()
 }
 
+func serverInfoSyncEqual(a, b ServerInfo) bool {
+	if !ServerInfoEqual(a, b) {
+		return false
+	}
+	_, aVia := a.(*viaServerInfo)
+	_, bVia := b.(*viaServerInfo)
+	return aVia == bVia
+}
+
 type serverInfo struct {
 	name string
 	addr net.Addr
@@ -232,12 +241,14 @@ type serverConnection struct {
 	connPhase  phase.BackendConnectionPhase
 }
 
+const pendingKeepAliveCapacity = 64
+
 func newServerConnection(server *registeredServer, previousServer *registeredServer, player *connectedPlayer) *serverConnection {
 	return &serverConnection{
 		server:         server,
 		player:         player,
 		previousServer: previousServer,
-		pendingPings:   lru.NewSync[int64, time.Time](lru.WithCapacity(5)),
+		pendingPings:   lru.NewSync[int64, time.Time](lru.WithCapacity(pendingKeepAliveCapacity)),
 		log: player.log.WithName("serverConn").WithValues(
 			"serverName", server.info.Name(),
 			"serverAddr", server.info.Addr()),
